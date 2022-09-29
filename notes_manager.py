@@ -2,10 +2,13 @@ import os, sqlite3
 from datetime import datetime
 
 def init():
-    if os.path.exists(".notesdb"):
+    editor = input("Enter default editor command : ")
+    with open(".pnotescfg", "w") as cfgfile:
+        cfgfile.write(editor)
+    if os.path.exists(".pnotesdb"):
         print("Pointless notes already initialized here")
         return
-    con = sqlite3.connect(".notesdb")
+    con = sqlite3.connect(".pnotesdb")
     cur = con.cursor()
     cur.execute("CREATE TABLE notes(file, name, course, date, type)")
     con.commit()
@@ -16,7 +19,7 @@ def init():
 def add(course, name, note_type, filepath):
     if not os.path.exists(filepath):
         open(filepath, "x").close()
-    con = sqlite3.connect(".notesdb")
+    con = sqlite3.connect(".pnotesdb")
     cur = con.cursor()
     date = datetime.today().strftime("%Y-%m-%d")
     cur.execute(f"""INSERT INTO notes VALUES
@@ -25,7 +28,7 @@ def add(course, name, note_type, filepath):
     con.commit()
 
 def edit(course, name):
-    con = sqlite3.connect(".notesdb")
+    con = sqlite3.connect(".pnotesdb")
     cur = con.cursor()
     cur.execute(f"SELECT file FROM notes WHERE name='{name}' AND course='{course}'")
     res = cur.fetchone()
@@ -33,10 +36,12 @@ def edit(course, name):
         print("Fichier introuvable")
         return
     filepath = res[0]
-    os.system("vim {}".format(filepath))
+    with open(".pnotescfg","r") as cfgfile:
+        editor = cfgfile.readline().strip()
+    os.system("{} {}".format(editor, filepath))
 
 def list_notes():
-    con = sqlite3.connect(".notesdb")
+    con = sqlite3.connect(".pnotesdb")
     cur = con.cursor()
     cur.execute("SELECT course, name, date, type FROM notes ORDER BY course")
     res = cur.fetchall()

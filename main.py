@@ -1,9 +1,7 @@
-import os
 import sys
-import sqlite3
-from datetime import datetime
 
 from notes_manager import *
+from notes_converter import *
 
 
 def main(op, args):
@@ -26,6 +24,8 @@ def main(op, args):
         edit(course, name)
     elif op == "list":
         list_notes()
+    elif op == "compile":
+        compile_notes()
 
 
 if __name__=="__main__":

@@ -4,5 +4,4 @@ Easy command line based notes manager because i'm too lazy to learn to use anyth
 ## Features
 * Notes creation and editing
 * Notes ordering in a filesystem by subject and type
-todo :
 * Convert notes to a static website
